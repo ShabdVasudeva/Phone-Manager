@@ -39,12 +39,16 @@ fun mainScreen(){
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            title = Text(
-                "Phone Manager",
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            ),
-            scrollBehavior = scrollBehavior
+            LargeTopAppBar(
+                title = {
+                    Text(
+                        "Phone Manager",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
+                scrollBehavior = scrollBehavior
+            )
         },
         content = { innerPadding ->
             LazyColumn(
