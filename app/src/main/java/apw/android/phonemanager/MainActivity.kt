@@ -2,35 +2,14 @@ package apw.android.phonemanager
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.*
-import android.content.Context
-import androidx.compose.animation.*
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.gestures.*
-import android.view.accessibility.AccessibilityManager
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.*
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.*
-import androidx.compose.ui.draw.*
-import androidx.compose.ui.platform.*
-import androidx.compose.ui.graphics.*
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.input.nestedscroll.*
-import android.app.Activity
-import android.content.*
-import android.widget.*
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.*
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.*
 import apw.android.phonemanager.ui.theme.MyComposeApplicationTheme
 
 class MainActivity : ComponentActivity() {
@@ -39,10 +18,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MyComposeApplicationTheme {
-                val context = remember{this}
                 Surface(modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background) {
-                    Main(context)
+                    Greeting("Android")
                 }
             }
         }
@@ -50,28 +28,14 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Main(context : Context){
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text("Phone Manager",
-                        maxLines = 1, 
-                        overflow = TextOverflow.Ellipsis
-                    )
-                },
-                actions = {
-                    IconButton(onClick={}){
-                        Icon(
-                            Icons.Default.Settings,
-                            contentDescription = "Settings"
-                        )
-                    }
-                }
-            )
-        },
-        content = { innerPadding ->
-            
-        }
-    )
+fun Greeting(name: String, modifier: Modifier = Modifier) {
+    Text(text = "Hello $name!", modifier = modifier)
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    MyComposeApplicationTheme {
+        Greeting("Android")
+    }
 }
