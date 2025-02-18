@@ -15,12 +15,12 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-        
+        multiDexEnabled = true
         vectorDrawables { 
             useSupportLibrary = true
         }
     }
-    
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -36,6 +36,7 @@ android {
     buildFeatures {        
         compose = true
     }
+
     composeOptions {
         kotlinCompilerExtensionVersion = "1.3.2"
     }
@@ -51,6 +52,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 }
 
 dependencies {
+    implementation("androidx.multidex:multidex:2.0.1")
     implementation(platform("androidx.compose:compose-bom:2024.11.00"))
     implementation("com.airbnb.android:lottie-compose:6.0.1")
     implementation("androidx.core:core-ktx:1.12.0")
