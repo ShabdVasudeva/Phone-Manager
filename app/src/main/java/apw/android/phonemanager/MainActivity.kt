@@ -39,9 +39,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MyComposeApplicationTheme {
+                val context = remember{this}
                 Surface(modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background) {
-                    Main(LocalContext.current)
+                    Main(context)
                 }
             }
         }
@@ -58,6 +59,14 @@ fun Main(context : Context){
                         maxLines = 1, 
                         overflow = TextOverflow.Ellipsis
                     )
+                },
+                actions = {
+                    IconButton(onClick={}){
+                        Icon(
+                            Icons.Default.Settings,
+                            contentDescription = "Settings"
+                        )
+                    }
                 }
             )
         },
