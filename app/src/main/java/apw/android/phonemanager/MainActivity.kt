@@ -49,7 +49,6 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun Main(context : Context){
     Scaffold(
         topBar = {
