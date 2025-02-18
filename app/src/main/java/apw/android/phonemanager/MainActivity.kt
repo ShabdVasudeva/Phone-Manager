@@ -40,12 +40,22 @@ fun mainScreen(){
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
-                title = {
-                    Text(
-                        "Phone Manager",
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                title = { Text("Phone Manager", maxLines = 1, overflow = TextOverflow.Ellipsis) },
+                navigationIcon = {
+                    IconButton(onClick = {}) {
+                        Icon(
+                            imageVector = Icons.Filled.Menu,
+                            contentDescription = "Localized description"
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = {}) {
+                        Icon(
+                            imageVector = Icons.Filled.Favorite,
+                            contentDescription = "Localized description"
+                        )
+                    }
                 },
                 scrollBehavior = scrollBehavior
             )
