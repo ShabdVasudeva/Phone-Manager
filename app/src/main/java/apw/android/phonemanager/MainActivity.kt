@@ -59,7 +59,7 @@ fun Main(context : Context){
                         maxLines = 1, 
                         overflow = TextOverflow.Ellipsis
                     )
-                }
+                },
                 actions = {
                     
                 }
