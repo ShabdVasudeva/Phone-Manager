@@ -66,14 +66,15 @@ fun mainScreen(){
             )
         },
         content = { innerPadding ->
+            Spacer(modifier = Modifier.height(10.dp))
             LazyColumn(
                 contentPadding = innerPadding,
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
                 modifier = Modifier.fillMaxSize()
             ) {
                 items(values) { info ->
                     Card(
-                        modifier = Modifier.fillMaxWidth().height(120.dp).padding(horizontal = 16.dp),
+                        modifier = Modifier.fillMaxWidth().height(95.dp).padding(horizontal = 16.dp),
                         shape = RoundedCornerShape(15.dp),
                         onClick = {}
                     ){
@@ -90,8 +91,8 @@ fun mainScreen(){
                                 )
                                 Text(
                                     text = info.summary,
-                                    fontSize = 10.sp,
-                                    modifier = Modifier.padding(start = 15.dp)
+                                    fontSize = 12.sp,
+                                    modifier = Modifier.padding(start = 10.dp)
                                 )
                             }
                         }
