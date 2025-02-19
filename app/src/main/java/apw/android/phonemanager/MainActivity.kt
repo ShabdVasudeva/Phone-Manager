@@ -73,23 +73,24 @@ fun mainScreen(){
             ) {
                 items(values) { info ->
                     Card(
-                        modifier = Modifier.fillMaxWidth().height(70.dp).padding(10.dp),
-                        shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp, bottomStart = 5.dp, bottomEnd = 5.dp),
+                        modifier = Modifier.fillMaxWidth().height(120.dp).padding(horizontal = 16.dp),
+                        shape = RoundedCornerShape(15.dp),
                         onClick = {}
                     ){
                         Row(
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier.fillMaxSize().padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ){
                             info.icon()
                             Column(verticalArrangement = Arrangement.Center){
                                 Text(
                                     text = info.title,
-                                    fontSize = 23.sp,
+                                    fontSize = 19.sp,
                                     modifier = Modifier.padding(start = 10.dp)
                                 )
                                 Text(
                                     text = info.summary,
-                                    fontSize = 15.sp,
+                                    fontSize = 10.sp,
                                     modifier = Modifier.padding(start = 15.dp)
                                 )
                             }
