@@ -74,7 +74,7 @@ fun mainScreen(){
                 items(values) { info ->
                     Card(
                         modifier = Modifier.fillMaxWidth().height(70.dp).padding(10.dp),
-                        shape = RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp, bottomStart = 15.dp, bottomEnd = 15.dp),
+                        shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp, bottomStart = 5.dp, bottomEnd = 5.dp),
                         onClick = {}
                     ){
                         Row(
