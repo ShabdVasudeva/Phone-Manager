@@ -5,6 +5,7 @@ import androidx.activity.*
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.shape.*
 import androidx.compose.foundation.*
 import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
@@ -33,28 +34,30 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+data class CardInfo(
+    val title: String,
+    val summary: String,
+    val icon: ImageVector
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun mainScreen(){
+    val values = listOf<CardInfo>(
+        CardInfo("Battery", "battery management and stats", Icons.Outlined.Face),
+        CardInfo("Storage", "Storage stats and management", Icons.Outlined.Home),
+    )
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
                 title = { Text("Phone Manager", maxLines = 1, overflow = TextOverflow.Ellipsis) },
-                navigationIcon = {
-                    IconButton(onClick = {}) {
-                        Icon(
-                            imageVector = Icons.Filled.Menu,
-                            contentDescription = "Localized description"
-                        )
-                    }
-                },
                 actions = {
                     IconButton(onClick = {}) {
                         Icon(
-                            imageVector = Icons.Filled.Favorite,
-                            contentDescription = "Localized description"
+                            imageVector = Icons.Filled.MoreVert,
+                            contentDescription = "Menu"
                         )
                     }
                 },
@@ -66,13 +69,34 @@ fun mainScreen(){
                 contentPadding = innerPadding,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                val list = (0..75).map { it.toString() }
-                items(count = list.size) {
-                    Text(
-                        text = list[it],
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-                    )
+                items(values.size) { index ->
+                    val info = values[index]
+                    Card(
+                        modifier = Modifier.fillMaxWidth().height(70.dp).padding(10.dp),
+                        shape = RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp, bottomStart = 15.dp, bottomEnd = 15.dp),
+                        onClick = {}
+                    ){
+                        Row(
+                            modifier = Modifier.matchParentSize(),
+                        ){
+                            Icon(
+                                imageVector = info.icon,
+                                contentDescription = info.title
+                            )
+                            Column(verticalArrangement = Arrangement.Center){
+                                Text(
+                                    text = info.title,
+                                    fontSize = 23.sp,
+                                    modifier = Modifier.padding(start = 10.dp)
+                                )
+                                Text(
+                                    text = info.summary,
+                                    fontSize = 15.sp,
+                                    modifier = Modifier.padding(start = 15.dp)
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
