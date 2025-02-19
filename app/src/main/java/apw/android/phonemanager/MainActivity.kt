@@ -38,15 +38,21 @@ class MainActivity : ComponentActivity() {
 data class CardInfo(
     val title: String,
     val summary: String,
-    val icon: ImageVector
+    val icon: @Composable () -> Unit
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun mainScreen(){
     val values = listOf<CardInfo>(
-        CardInfo("Battery", "battery management and stats", Icons.Outlined.Face),
-        CardInfo("Storage", "Storage stats and management", Icons.Outlined.Home),
+        CardInfo("Battery", "battery management and stats", Icon(
+                                imageVector = Icons.Outlined.Face,
+                                contentDescription = info.title
+                            )),
+        CardInfo("Storage", "Storage stats and management", Icon(
+                                imageVector = Icons.Outlined.Home,
+                                contentDescription = info.title
+                            )),
     )
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
@@ -80,10 +86,7 @@ fun mainScreen(){
                         Row(
                             modifier = Modifier.matchParentSize(),
                         ){
-                            Icon(
-                                imageVector = info.icon,
-                                contentDescription = info.title
-                            )
+                            info.icon()
                             Column(verticalArrangement = Arrangement.Center){
                                 Text(
                                     text = info.title,
