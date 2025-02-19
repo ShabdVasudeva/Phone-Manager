@@ -47,13 +47,13 @@ fun mainScreen(){
     val values = listOf<CardInfo>(
         CardInfo("Battery", "battery management and stats"){
             Icon(
-                imageVector = Icons.Outlined.Face,
+                imageVector = Icons.Filled.MoreVert,
                 contentDescription = "Battery"
             )
         },
         CardInfo("Storage", "Storage stats and management"){
             Icon(
-                imageVector = Icons.Outlined.Home,
+                imageVector = Icons.Filled.MoreVert,
                 contentDescription = "Storage"
             )
         }
@@ -78,17 +78,17 @@ fun mainScreen(){
         content = { innerPadding ->
             LazyColumn(
                 contentPadding = innerPadding,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxSize()
             ) {
-                items(values.size) { index ->
-                    val info = values[index]
+                items(values) { info ->
                     Card(
                         modifier = Modifier.fillMaxWidth().height(70.dp).padding(10.dp),
                         shape = RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp, bottomStart = 15.dp, bottomEnd = 15.dp),
                         onClick = {}
                     ){
                         Row(
-                            modifier = Modifier.matchParentSize(),
+                            modifier = Modifier.fillMaxSize(),
                         ){
                             info.icon()
                             Column(verticalArrangement = Arrangement.Center){
