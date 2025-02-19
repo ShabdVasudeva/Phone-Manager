@@ -47,11 +47,11 @@ fun mainScreen(){
     val values = listOf<CardInfo>(
         CardInfo("Battery", "battery management and stats", Icon(
                                 imageVector = Icons.Outlined.Face,
-                                contentDescription = info.title
+                                contentDescription = "Battery"
                             )),
         CardInfo("Storage", "Storage stats and management", Icon(
                                 imageVector = Icons.Outlined.Home,
-                                contentDescription = info.title
+                                contentDescription = "Storage"
                             )),
     )
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
