@@ -45,18 +45,8 @@ data class CardInfo(
 @Composable
 fun mainScreen(){
     val values = listOf<CardInfo>(
-        CardInfo("Battery", "battery management and stats"){
-            Icon(
-                imageVector = Icons.Filled.MoreVert,
-                contentDescription = "Battery"
-            )
-        },
-        CardInfo("Storage", "Storage stats and management"){
-            Icon(
-                imageVector = Icons.Filled.MoreVert,
-                contentDescription = "Storage"
-            )
-        }
+        CardInfo("Battery", "battery management and stats", {Icon(imageVector = Icons.Filled.MoreVert, contentDescription = "Battery")}),
+        CardInfo("Storage", "Storage stats and management", {Icon(imageVector = Icons.Filled.MoreVert, contentDescription = "Storage")})
     )
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
