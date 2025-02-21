@@ -70,11 +70,10 @@ fun mainScreen(){
             )
         },
         content = { innerPadding ->
-            Spacer(modifier = Modifier.height(10.dp).fillMaxWidth())
             LazyColumn(
                 contentPadding = innerPadding,
                 verticalArrangement = Arrangement.spacedBy(10.dp),
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.padding(10.dp).fillMaxSize()
             ) {
                 items(values) { info ->
                     Card(
