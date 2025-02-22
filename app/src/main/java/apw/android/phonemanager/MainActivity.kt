@@ -12,12 +12,14 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.text.style.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.*
 import androidx.compose.ui.tooling.preview.Preview
 import apw.android.phonemanager.ui.theme.MyComposeApplicationTheme
+import apw.android.phonemanager.R
 
 class MainActivity : ComponentActivity() {
 
@@ -45,8 +47,8 @@ data class CardInfo(
 @Composable
 fun mainScreen(){
     val values = listOf<CardInfo>(
-        CardInfo("Battery", "Battery stats and management", {Icon(imageVector = Icons.Filled.MoreVert, contentDescription = "Battery")}),
-        CardInfo("Storage", "Storage stats and management", {Icon(imageVector = Icons.Filled.MoreVert, contentDescription = "Storage")})
+        CardInfo("Battery", "Battery stats and management", {Icon(painter = painterResource(R.drawable.battery), contentDescription = "Battery")}),
+        CardInfo("Storage", "Storage stats and management", {Icon(painter = painterResource(R.drawable.storage), contentDescription = "Storage")})
     )
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
