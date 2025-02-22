@@ -46,10 +46,7 @@ data class CardInfo(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun mainScreen(){
-    val values = listOf<CardInfo>(
-        CardInfo("Battery", "Battery stats and management", {Icon(painter = painterResource(R.drawable.battery), contentDescription = "Battery")}),
-        CardInfo("Storage", "Storage stats and management", {Icon(painter = painterResource(R.drawable.storage), contentDescription = "Storage")})
-    )
+    var selectedScreen by remember {mutableStateOf("Manager")}
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -71,39 +68,95 @@ fun mainScreen(){
                 )
             )
         },
+        bottomBar = {
+            BottomNavBar(selectedScreen){
+                selectedScreen = it
+            }
+        },
         content = { innerPadding ->
-            LazyColumn(
-                contentPadding = innerPadding,
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-                modifier = Modifier.padding(10.dp).fillMaxSize()
-            ) {
-                items(values) { info ->
-                    Card(
-                        modifier = Modifier.fillMaxWidth().height(95.dp).padding(horizontal = 16.dp),
-                        shape = RoundedCornerShape(15.dp),
-                        onClick = {}
-                    ){
-                        Row(
-                            modifier = Modifier.fillMaxSize().padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ){
-                            info.icon()
-                            Column(verticalArrangement = Arrangement.Center){
-                                Text(
-                                    text = info.title,
-                                    fontSize = 19.sp,
-                                    modifier = Modifier.padding(start = 10.dp)
-                                )
-                                Text(
-                                    text = info.summary,
-                                    fontSize = 12.sp,
-                                    modifier = Modifier.padding(start = 10.dp)
-                                )
-                            }
-                        }
-                    }
+            Box(
+                modifier = Modifier.padding(innerPadding)
+            ){
+                when(selectedScreen){
+                    "Manager" -> ManagerScreen()
+                    "Info" -> InfoScreen()
                 }
             }
         }
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ManagerScreen(){
+    val values = listOf<CardInfo>(
+        CardInfo("Battery", "Battery stats and management", {Icon(painter = painterResource(R.drawable.battery), contentDescription = "Battery")}),
+        CardInfo("Storage", "Storage stats and management", {Icon(painter = painterResource(R.drawable.storage), contentDescription = "Storage")})
+    )
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        modifier = Modifier.padding(10.dp).fillMaxSize()
+    ) {
+        items(values) { info ->
+            Card(
+                modifier = Modifier.fillMaxWidth().height(95.dp).padding(horizontal = 16.dp),
+                shape = RoundedCornerShape(15.dp),
+                onClick = {}
+            ){
+                Row(
+                    modifier = Modifier.fillMaxSize().padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    info.icon()
+                    Column(verticalArrangement = Arrangement.Center){
+                        Text(
+                            text = info.title,
+                            fontSize = 19.sp,
+                            modifier = Modifier.padding(start = 10.dp)
+                        )
+                        Text(
+                            text = info.summary,
+                            fontSize = 12.sp,
+                            modifier = Modifier.padding(start = 10.dp)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun InfoScreen() {
+    Column(
+        modifier = Modifier.fillMaxSize().padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Phone Manager App", fontSize = 24.sp)
+        Spacer(modifier = Modifier.height(10.dp))
+        Text("Version: 1.0", fontSize = 18.sp)
+        Spacer(modifier = Modifier.height(10.dp))
+        Text("Developed by APW Android", fontSize = 18.sp)
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BottomNavBar(selectedScreen: String, onScreenSelected: (String) -> Unit) {
+    NavigationBar {
+        NavigationBarItem(
+            selected = selectedScreen == "Manager",
+            onClick = { onScreenSelected("Manager") },
+            icon = { Icon(painter = painterResource(R.drawable.main), contentDescription = "Manager") },
+            label = { Text("Manager") }
+        )
+        NavigationBarItem(
+            selected = selectedScreen == "Info",
+            onClick = { onScreenSelected("Info") },
+            icon = { Icon(painter = painterResource(R.drawable.info), contentDescription = "Phone Info") },
+            label = { Text("Phone Info") }
+        )
+    }
 }
