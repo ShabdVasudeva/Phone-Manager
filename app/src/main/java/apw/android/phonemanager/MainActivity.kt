@@ -12,6 +12,9 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import android.content.*
+import androidx.compose.ui.platform.*
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.res.*
 import androidx.compose.ui.text.style.*
 import androidx.compose.ui.unit.*
@@ -40,7 +43,8 @@ class MainActivity : ComponentActivity() {
 data class CardInfo(
     val title: String,
     val summary: String,
-    val icon: @Composable () -> Unit
+    val icon: @Composable () -> Unit,
+    val intent: Intent
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -89,10 +93,14 @@ fun mainScreen(){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManagerScreen(){
+    val context = LocalContext.current
+    val intent1: Intent = Intent(context, BatteryActivity::class.java)
+    val intent2: Intent = Intent(context, BatteryActivity::class.java)
     val values = listOf<CardInfo>(
-        CardInfo("Battery", "Battery stats and management", {Icon(painter = painterResource(R.drawable.battery), contentDescription = "Battery")}),
-        CardInfo("Storage", "Storage stats and management", {Icon(painter = painterResource(R.drawable.storage), contentDescription = "Storage")})
+        CardInfo("Battery", "Battery stats and management", {Icon(painter = painterResource(R.drawable.battery), contentDescription = "Battery")}, intent1),
+        CardInfo("Storage", "Storage stats and management", {Icon(painter = painterResource(R.drawable.storage), contentDescription = "Storage")}, intent2)
     )
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(10.dp),
         modifier = Modifier.padding(10.dp).fillMaxSize()
@@ -101,7 +109,9 @@ fun ManagerScreen(){
             Card(
                 modifier = Modifier.fillMaxWidth().height(95.dp).padding(horizontal = 16.dp),
                 shape = RoundedCornerShape(15.dp),
-                onClick = {}
+                onClick = {
+                    launcher.launch(info.intent)
+                }
             ){
                 Row(
                     modifier = Modifier.fillMaxSize().padding(16.dp),
