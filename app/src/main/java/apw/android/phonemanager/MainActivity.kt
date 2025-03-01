@@ -13,6 +13,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import android.content.*
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.font.FontWeight 
 import androidx.activity.compose.*
 import androidx.compose.ui.platform.*
 import androidx.activity.result.contract.ActivityResultContracts
@@ -71,8 +73,8 @@ fun mainScreen(){
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(toolbarHeight)
-                    .graphicsLayer(alpha = toolbarOpacity)  // Apply fade animation
-                    .background(MaterialTheme.colorScheme.surface)  // Dynamic BG color
+                    .graphicsLayer(alpha = toolbarOpacity)
+                    .background(MaterialTheme.colorScheme.surface)
                     .padding(16.dp),
                     contentAlignment = Alignment.CenterStart
             ) {
