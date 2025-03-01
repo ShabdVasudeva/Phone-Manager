@@ -56,35 +56,22 @@ fun mainScreen(){
     var selectedScreen by remember {mutableStateOf("Manager")}
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val scrollState = rememberLazyListState()
-    val toolbarHeight by derivedStateOf {
-        val minHeight = 56.dp
-        val maxHeight = 100.dp 
-        val scrolledY = scrollState.firstVisibleItemScrollOffset.toFloat()
-        val shrinkFactor = (1f - (scrolledY / 400f)).coerceIn(0.5f, 1f)
-        maxHeight * shrinkFactor
-    }
-    val toolbarOpacity by derivedStateOf {
-        val scrolledY = scrollState.firstVisibleItemScrollOffset.toFloat()
-        (1f - (scrolledY / 300f)).coerceIn(0.3f, 1f)
-    }
     Scaffold(
         topBar = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(toolbarHeight)
-                    .graphicsLayer(alpha = toolbarOpacity)
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(16.dp),
-                    contentAlignment = Alignment.CenterStart
-            ) {
-                Text(
-                    "Phone Manager",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
+            LargeTopAppBar(
+                title = {
+                    Text(
+                        "Phone Manager",
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
+                colors = TopAppBarDefaults.largeTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceVariant
+                ),
+                scrollBehavior = scrollBehavior
+            )
         },
         bottomBar = {
             BottomNavBar(selectedScreen){
