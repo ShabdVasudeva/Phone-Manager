@@ -53,25 +53,36 @@ data class CardInfo(
 fun mainScreen(){
     var selectedScreen by remember {mutableStateOf("Manager")}
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val scrollState = rememberLazyListState()
+    val toolbarHeight by derivedStateOf {
+        val minHeight = 56.dp
+        val maxHeight = 100.dp 
+        val scrolledY = scrollState.firstVisibleItemScrollOffset.toFloat()
+        val shrinkFactor = (1f - (scrolledY / 400f)).coerceIn(0.5f, 1f)
+        maxHeight * shrinkFactor
+    }
+    val toolbarOpacity by derivedStateOf {
+        val scrolledY = scrollState.firstVisibleItemScrollOffset.toFloat()
+        (1f - (scrolledY / 300f)).coerceIn(0.3f, 1f)
+    }
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            LargeTopAppBar(
-                title = { Text("Phone Manager", maxLines = 1, overflow = TextOverflow.Ellipsis) },
-                actions = {
-                    IconButton(onClick = {}) {
-                        Icon(
-                            imageVector = Icons.Filled.MoreVert,
-                            contentDescription = "Menu"
-                        )
-                    }
-                },
-                scrollBehavior = scrollBehavior,
-                colors = TopAppBarDefaults.largeTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceVariant
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(toolbarHeight)
+                    .graphicsLayer(alpha = toolbarOpacity)  // Apply fade animation
+                    .background(MaterialTheme.colorScheme.surface)  // Dynamic BG color
+                    .padding(16.dp),
+                    contentAlignment = Alignment.CenterStart
+            ) {
+                Text(
+                    "Phone Manager",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
-            )
+            }
         },
         bottomBar = {
             BottomNavBar(selectedScreen){
