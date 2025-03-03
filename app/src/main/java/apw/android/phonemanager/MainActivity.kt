@@ -55,13 +55,14 @@ data class CardInfo(
 fun mainScreen(){
     var selectedScreen by remember {mutableStateOf("Manager")}
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    var topbarTitle = if(selectedScreen == "Info") "Info" else "Manager"
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
                 title = {
                     Text(
-                        "Phone Manager",
+                        "Phone $topbarTitle",
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
