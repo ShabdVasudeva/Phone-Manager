@@ -26,7 +26,7 @@ android {
 
     externalNativeBuild {
         cmake {
-            path = file("src/main/cpp/CMakeLists.txt").absolutePath
+            path = file("src/main/cpp/CMakeLists.txt")
         }
     }
 
