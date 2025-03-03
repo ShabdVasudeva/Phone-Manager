@@ -19,6 +19,15 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install NDK and CMake
+        run: |
+          sdkmanager "ndk;26.2.11394342" "cmake;3.22.1"
+          echo "NDK Version Installed:"
+          ${ANDROID_SDK_ROOT}/ndk/26.2.11394342/ndk-build --version
+
       - name: Set up Gradle wrapper (if missing or outdated)
         run: |
           if [ ! -f gradle/wrapper/gradle-wrapper.properties ]; then
@@ -37,9 +46,12 @@ jobs:
           echo "KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
           echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> $GITHUB_ENV
           echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> $GITHUB_ENV
-          
-      - name: Build APK
+
+      - name: Build APK with C++ Support
         run: ./gradlew assembleRelease --no-daemon
+        env:
+          ANDROID_NDK_HOME: $ANDROID_SDK_ROOT/ndk/26.2.11394342
+          CMAKE_HOME: $ANDROID_SDK_ROOT/cmake/3.22.1
 
       - name: Upload APK as Artifact
         uses: actions/upload-artifact@v4
