@@ -24,9 +24,9 @@ android {
         }
     }
 
-    externNativeBuild {
+    externalNativeBuild {
         cmake {
-            path = file("src/main/cpp/CMakeLists.txt")
+            path = file("src/main/cpp/CMakeLists.txt").absolutePath
         }
     }
 
