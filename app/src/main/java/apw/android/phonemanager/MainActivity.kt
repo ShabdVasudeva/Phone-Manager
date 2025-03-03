@@ -55,8 +55,8 @@ data class CardInfo(
 fun mainScreen(){
     var selectedScreen by remember {mutableStateOf("Manager")}
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    val scrollState = rememberLazyListState()
     Scaffold(
+        modifier = Modifier.nestedscroll(scrollBehavior.nestedScrollConnection)
         topBar = {
             LargeTopAppBar(
                 title = {
