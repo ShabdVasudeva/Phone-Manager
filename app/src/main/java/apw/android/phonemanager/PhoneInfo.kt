@@ -27,8 +27,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import apw.android.phonemanager.ui.theme.MyComposeApplicationTheme
 import apw.android.phonemanager.R
 
+data class InfoData(
+    val title: String,
+    val subtitle: String,
+    val icon: @Composable () -> Unit
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun phoneInfoCompat(){
-    
+    val values = listOf<InfoData>(
+        InfoData("Device name", )
+    )
+    LazyColumn(
+        modifier = Modifier.fillMaxWidth().padding(16.dp),
+    ){
+        items(values){ item->
+            
+        }
+    }
 }
