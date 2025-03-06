@@ -26,18 +26,19 @@ import androidx.compose.ui.input.nestedscroll.*
 import androidx.compose.ui.tooling.preview.Preview
 import apw.android.phonemanager.ui.theme.MyComposeApplicationTheme
 import apw.android.phonemanager.R
+import apw.android.phonemanager.*
 
 data class InfoData(
     val title: String,
-    val subtitle: String,
-    val icon: @Composable () -> Unit
+    val subtitle: String
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun phoneInfoCompat(){
+    val deviceName = DeviceInfo.getDeviceName()
     val values = listOf<InfoData>(
-        InfoData("Device name", )
+        InfoData("Device name", "$deviceName")
     )
     LazyColumn(
         modifier = Modifier.fillMaxWidth().padding(16.dp),

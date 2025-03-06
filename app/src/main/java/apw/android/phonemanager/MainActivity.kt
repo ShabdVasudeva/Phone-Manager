@@ -141,12 +141,13 @@ fun ManagerScreen(){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InfoScreen() {
+    val name = DeviceInfo.getDeviceName()
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Phone Manager App", fontSize = 24.sp)
+        Text("$name", fontSize = 24.sp)
         Spacer(modifier = Modifier.height(10.dp))
         Text("Version: 1.0", fontSize = 18.sp)
         Spacer(modifier = Modifier.height(10.dp))
