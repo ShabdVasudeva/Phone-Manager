@@ -41,7 +41,7 @@ fun phoneInfoCompat(){
     val values = listOf<InfoData>(
         InfoData("Device name", "$deviceName"),
         InfoData("Processor", "$cpuName")
-    }
+    )
     Card(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         shape = RoundedCornerShape(15.dp),
