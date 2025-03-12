@@ -53,11 +53,11 @@ fun phoneInfoCompat(){
                     verticalArrangement = Arrangement.Center
                 ){
                     Text(
-                        text = values.title,
+                        text = info.title,
                         fontSize = 19.sp
                     )
                     Text(
-                        text = values.subtitle,
+                        text = info.subtitle,
                         fontSize = 12.sp
                     )
                 }
