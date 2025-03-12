@@ -4,6 +4,6 @@
 #include <string>
 
 std::string getDeviceName();
-std::string getCpuName();
+std::string getCPUName();
 
 #endif
