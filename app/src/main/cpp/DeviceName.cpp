@@ -12,12 +12,12 @@ std::string getDeviceName(){
     return "Unknown device";
 }
 
-std::string getCpuName(){
-    std::ifstream cpuinfo("/proc/cpuinfo");
+std::string getCPUName() {
+    std::ifstream file("/proc/cpuinfo");
     std::string line;
-    while(std::getline(cpuinfo,line)){
-        if(line.find("model name")!=std::string::npos || line.find("Hardware")!=std::string::npos){
-            return line.substr(line.find(":")+2);
+    while (getline(file, line)) {
+        if (line.find("Hardware") != std::string::npos) {
+            return line.substr(line.find(":") + 2); // Extract CPU name
         }
     }
     return "Unknown CPU";
