@@ -1,5 +1,7 @@
 #include <sys/system_properties.h>
 #include <string>
+#include <fstream>
+#include <iostream>
 #include "DeviceName.h"
 
 std::string getDeviceName(){
@@ -8,4 +10,15 @@ std::string getDeviceName(){
         return std::string(name);
     }
     return "Unknown device";
+}
+
+std::string getCpuName(){
+    std::ifstream cpuinfo("/proc/cpuinfo");
+    std::string line;
+    while(std::getline(cpuinfo,line)){
+        if(line.find("model name")!=std::string::npos || line.find("Hardware")!=std::string::npos){
+            return line.substr(line.find(":")+2);
+        }
+    }
+    return "Unknown CPU";
 }
