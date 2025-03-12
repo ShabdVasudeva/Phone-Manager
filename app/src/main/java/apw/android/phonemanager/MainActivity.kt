@@ -85,7 +85,7 @@ fun mainScreen(){
             ){
                 when(selectedScreen){
                     "Manager" -> ManagerScreen()
-                    "Info" -> InfoScreen()
+                    "Info" -> phoneInfoCompat()
                 }
             }
         }

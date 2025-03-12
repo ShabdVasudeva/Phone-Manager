@@ -40,11 +40,28 @@ fun phoneInfoCompat(){
     val values = listOf<InfoData>(
         InfoData("Device name", "$deviceName")
     )
-    LazyColumn(
-        modifier = Modifier.fillMaxWidth().padding(16.dp),
+    Card(
+        modifier = Modifier.fillMaxSize().padding(16.dp),
+        shape = RoundedCornerShape(15.dp),
     ){
-        items(values){ item->
-            
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier.padding(10.dp).fillMaxSize()
+        ){
+            items(values){ info ->
+                Column(
+                    verticalArrangement = Arrangement.Center
+                ){
+                    Text(
+                        text = values.title,
+                        fontSize = 19.sp
+                    )
+                    Text(
+                        text = values.subtitle,
+                        fontSize = 12.sp
+                    )
+                }
+            }
         }
     }
 }
