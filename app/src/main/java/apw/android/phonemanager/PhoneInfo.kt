@@ -37,7 +37,7 @@ data class InfoData(
 @Composable
 fun phoneInfoCompat(){
     val deviceName = DeviceInfo.getDeviceName()
-    val cpuName = DeviceInfo.getCpuName()
+    val cpuName = DeviceInfo.getCPUName()
     val values = listOf<InfoData>(
         InfoData("Device name", "$deviceName"),
         InfoData("Processor", "$cpuName")
