@@ -5,5 +5,4 @@ object DeviceInfo{
         System.loadLibrary("systemutils")
     }
     external fun getDeviceName(): String
-    external fun getCPUName(): String
 }
