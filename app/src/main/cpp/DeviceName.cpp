@@ -11,17 +11,3 @@ std::string getDeviceName(){
     }
     return "Unknown device";
 }
-
-std::string getCPUName() {
-    std::ifstream file("/proc/cpuinfo");
-    std::string line;
-    
-    while (getline(file, line)) {
-        if (line.find("Processor") != std::string::npos || 
-            line.find("model name") != std::string::npos) {  // Some devices use "model name"
-            return line.substr(line.find(":") + 2);
-        }
-    } 
-    
-    return "Unknown CPU";
-}

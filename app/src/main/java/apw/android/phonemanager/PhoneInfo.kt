@@ -37,10 +37,12 @@ data class InfoData(
 @Composable
 fun phoneInfoCompat(){
     val deviceName = DeviceInfo.getDeviceName()
-    val cpuName = DeviceInfo.getCPUName()
+    val cpuName = CPU.getCPUName()
+    val cpuDetails = CPU.getCPUDetails()
     val values = listOf<InfoData>(
         InfoData("Device name", "$deviceName"),
-        InfoData("Processor", "$cpuName")
+        InfoData("Processor", "$cpuName"),
+        InfoData("CPU Details", "$cpuDetails")
     )
     Card(
         modifier = Modifier.fillMaxSize().padding(16.dp),

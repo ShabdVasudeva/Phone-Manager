@@ -5,6 +5,7 @@ project(systemutils)
 add_library(systemutils SHARED
     phoneinfo.cpp
     DeviceName.cpp
+    CPUInfo.cpp
 )
 
 find_library(log-lib log)
