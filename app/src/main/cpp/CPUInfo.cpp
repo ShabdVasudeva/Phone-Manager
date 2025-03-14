@@ -2,7 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <android/log.h>
-
+#include <map>
 #define LOG_TAG "CPUInfo"
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 
