@@ -21,6 +21,6 @@ struct CpuDataModel {
     std::string cpuVariant;
 };
 
-extern "C" CpuDataModel getCpuData();
+CpuDataModel getCpuData();
 
 #endif
