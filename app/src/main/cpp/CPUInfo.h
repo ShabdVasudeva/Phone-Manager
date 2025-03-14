@@ -1,12 +1,26 @@
 #ifndef CPUINFO_H
 #define CPUINFO_H
 
-#include <jni.h>
+#include <string>
 
-extern "C" {
-    JNIEXPORT jstring JNICALL Java_apw_android_phonemanager_CPU_getCPUDetails(JNIEnv *, jobject);
-    JNIEXPORT jstring JNICALL Java_apw_android_phonemanager_CPU_getCPUName(JNIEnv *, jobject);
-    JNIEXPORT jint JNICALL Java_apw_android_phonemanager_CPU_getNumCores(JNIEnv *, jobject);
-}
+struct CpuDataModel {
+    std::string model;
+    std::string name;
+    std::string manufacturer;
+    std::string architecture;
+    std::string fab;
+    std::string coreCount;
+    std::string coreDetail;
+    std::string frequency;
+    std::string governor;
+    std::string cpuBit;
+    std::string cpuFeatures;
+    std::string cpuImplementer;
+    std::string cpuPart;
+    std::string cpuRevision;
+    std::string cpuVariant;
+};
+
+extern "C" CpuDataModel getCpuData();
 
 #endif
