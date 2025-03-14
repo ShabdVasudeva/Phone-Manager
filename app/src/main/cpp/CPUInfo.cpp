@@ -56,7 +56,7 @@ std::string getCpuMaxFrequency() {
     return freq;
 }
 
-extern "C" CpuDataModel getCpuData() {
+CpuDataModel getCpuData() {
     auto cpuInfo = parseProcCpuInfo();
 
     std::string processorModel = cpuInfo["Hardware"];
