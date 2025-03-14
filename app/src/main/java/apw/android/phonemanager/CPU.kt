@@ -1,6 +1,6 @@
 package apw.android.phonemanager;
 
-object CPUInfo {
+object CPU{
     init {
         System.loadLibrary("systemutils")
     }
