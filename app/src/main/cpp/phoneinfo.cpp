@@ -2,7 +2,6 @@
 #include "DeviceName.h"
 #include <string>
 #include <iostream>
-#include "CPUInfo.h"
 #include <map>
 
 extern "C" JNIEXPORT jstring JNICALL
