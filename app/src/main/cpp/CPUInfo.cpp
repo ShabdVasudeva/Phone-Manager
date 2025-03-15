@@ -20,7 +20,7 @@ std::string getCpuInfoField(const std::string& path) {
 std::string getCPUName(){
     std::ifstream file("/proc/cpuinfo");
     std::string line;
-    while(syd::getline(file, line)){
+    while(std::getline(file, line)){
         if(line.find("Hardware") != std::string::npos || line.find("model name") != std::string::npos){
             return line.substr(line.find(":")+2);
         }
