@@ -1,5 +1,7 @@
 package apw.android.phonemanager;
 
+import android.os.Build
+
 class CPU{
     companion object{
         init{
