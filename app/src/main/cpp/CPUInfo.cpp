@@ -5,6 +5,7 @@
 #include <iostream>
 #include <map>
 #include <cstdio>
+#include <array>
 #include <memory>
 #include <sys/utsname.h>
 #include <regex>
@@ -21,6 +22,19 @@ std::string execCommand(const char *str){
     if(!result.empty() && result[result.length()-1] == '\n'){
         result.erase(result.length()-1);
     }
+    return result;
+}
+
+std::string runCommand(const char* cmd) {
+    std::array<char, 128> buffer;
+    std::string result;
+    FILE* pipe = popen(cmd, "r");
+    if (!pipe) return "Error";
+    
+    while (fgets(buffer.data(), buffer.size(), pipe) != nullptr) {
+        result += buffer.data();
+    }
+    pclose(pipe);
     return result;
 }
 
@@ -67,7 +81,6 @@ std::string getGpuInfo(const std::string &input) {
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_apw_android_phonemanager_CPU_getGPURenderer(JNIEnv *env, jobject thiz){
-    std::string dumpsysOutput = execCommand("dumpsys SurfaceFlinger | grep GLES");
-    std::string gpuInfo = getGpuInfo(dumpsysOutput);
+    std::string dumpsysOutput = runCommand("dumpsys SurfaceFlinger | grep GLES");
     return env->NewStringUTF(dumpsysOutput.c_str());
 }
