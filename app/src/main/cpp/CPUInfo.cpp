@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <memory>
 #include <sys/utsname.h>
+#include <regex>
 
 std::string execCommand(const char *str){
     std::string result;
@@ -55,8 +56,18 @@ Java_apw_android_phonemanager_CPU_getCPUArch(JNIEnv *env, jobject thiz) {
     return env->NewStringUTF(arm64.c_str());
 }
 
+std::string getGpuInfo(const std::string *input){
+    std::regex pattern(R"GLES:\s*([^,]+),)");
+    std::smatch match;
+    if(std::regex_search(input, match, pattern) && match.size()>=3){
+        return match[1].str() + "," + match[2].str();
+    }
+    return "Unknown";
+}
+
 extern "C" JNIEXPORT jstring JNICALL
 Java_apw_android_phonemanager_CPU_getGPURenderer(JNIEnv *env, jobject thiz){
-    const char *renderer = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
-    return env->NewStringUTF(renderer ? renderer : "Unknown");
+    std::string dumpsysOutput = execCommand("dumpsys SurfaceFlinger | grep GLES");
+    std::string gpuInfo = getGpuInfo(dumpsysOutput);
+    return env->NewStringUTF(gpuInfo.c_str());
 }

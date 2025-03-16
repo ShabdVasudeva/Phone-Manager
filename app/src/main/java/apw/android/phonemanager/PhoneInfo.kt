@@ -49,7 +49,7 @@ fun phoneInfoCompat(){
         InfoData("CPU Model", "$cpuModel"),
         InfoData("CPU Cores", "$cpuCores"),
         InfoData("Architecture", "$cpuArch"),
-        InfoData("Gpu Renderer", "$gpuRenderer")
+        InfoData("GPU Info", "$gpuRenderer")
     )
     Card(
         modifier = Modifier.fillMaxSize().padding(16.dp),
