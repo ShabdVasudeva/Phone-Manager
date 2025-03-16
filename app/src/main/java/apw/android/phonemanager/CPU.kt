@@ -12,4 +12,6 @@ object CPU{
     fun getCPUAbi(): String{
         return Build.SUPPORTED_ABIS.joinToString(", ")
     }
+    external fun getCPUMan(): String
+    external fun getGPURenderer(): String
 }

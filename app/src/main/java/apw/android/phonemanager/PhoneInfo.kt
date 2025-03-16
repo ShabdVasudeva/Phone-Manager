@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.res.*
 import androidx.compose.ui.text.style.*
+import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.*
@@ -37,14 +38,18 @@ data class InfoData(
 @Composable
 fun phoneInfoCompat(){
     val deviceName = DeviceInfo.getDeviceName()
-    val cpuName = CPU.getCPUName()
+    val cpuModel = CPU.getCPUName()
     val cpuCores = CPU.getCPUCores()
     val cpuArch = CPU.getCPUArch()
+    val cpuMan = CPU.getCPUMan()
+    val gpuRenderer = CPU.getGPURenderer()
     val values = listOf<InfoData>(
         InfoData("Device name", "$deviceName"),
-        InfoData("CPU Name", "$cpuName"),
+        InfoData("CPU Manufacturer", "$cpuMan"),
+        InfoData("CPU Model", "$cpuModel"),
         InfoData("CPU Cores", "$cpuCores"),
-        InfoData("Architecture", "$cpuArch")
+        InfoData("Architecture", "$cpuArch"),
+        InfoData("Gpu Renderer", "$gpuRenderer")
     )
     Card(
         modifier = Modifier.fillMaxSize().padding(16.dp),
@@ -60,7 +65,8 @@ fun phoneInfoCompat(){
                 ){
                     Text(
                         text = info.title,
-                        fontSize = 19.sp
+                        fontSize = 17.5.sp,
+                        fontWeight = FontWeight.Bold
                     )
                     Text(
                         text = info.subtitle,
