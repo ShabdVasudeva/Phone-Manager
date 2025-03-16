@@ -61,6 +61,6 @@ Java_apw_android_phonemanager_CPU_getCPUArch(JNIEnv *env, jobject thiz) {
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_apw_android_phonemanager_CPU_getGPURenderer(JNIEnv *env, jobject thiz){
-    const char* renderer = (const char*) glGetString(GL_RENDERER);
-    return env->NewStringUTF(renderer ? renderer : "Unknown");
+    std::string gpu = execCommand("getprop ro.hardware.egl");
+    return env->NewStringUTF(gpu ? gpu : "Unknown");
 }

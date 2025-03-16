@@ -42,14 +42,14 @@ fun phoneInfoCompat(){
     val cpuCores = CPU.getCPUCores()
     val cpuArch = CPU.getCPUArch()
     val cpuMan = CPU.getCPUMan()
-    val gpuRenderer = GPU.getGPURenderer()
+    val gpuRenderer = CPU.getGPURenderer()
     val values = listOf<InfoData>(
         InfoData("Device name", "$deviceName"),
         InfoData("CPU Manufacturer", "$cpuMan"),
         InfoData("CPU Model", "$cpuModel"),
         InfoData("CPU Cores", "$cpuCores"),
         InfoData("Architecture", "$cpuArch"),
-        InfoData("GPU Info", "$gpuRenderer")
+        InfoData("Graphics Renderer", "$gpuRenderer")
     )
     Card(
         modifier = Modifier.fillMaxSize().padding(16.dp),
