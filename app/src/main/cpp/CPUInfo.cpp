@@ -4,6 +4,8 @@
 #include <unistd.h>
 #include <iostream>
 #include <map>
+#include <cstdio>
+#include <memory>
 #include <sys/utsname.h>
 
 std::string getCpuInfoField(const std::string& path) {
@@ -17,21 +19,29 @@ std::string getCpuInfoField(const std::string& path) {
     return "Unknown";
 }
 
-std::string getCPUName(){
-    std::ifstream file("/proc/cpuinfo");
-    std::string line;
-    while(std::getline(file, line)){
-        if(line.find("Hardware") != std::string::npos || line.find("model name") != std::string::npos){
-            return line.substr(line.find(":")+2);
-        }
+std::string execCommand(const char *str){
+    std::string result;
+    char buffer[128];
+    FILE* pipe = popen(str, "r");
+    if(!pipe) return "Unkown";
+    while(fgets(buffer, sizeof(buffer), pipe) != nullptr){
+        result += buffer;
     }
-    return "Null";
+    pclose(pipe);
+    if(!result.empty() && result[result.length()-1] == '\n'){
+        result.erase(result.length()-1);
+    }
+    return result;
 }
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_apw_android_phonemanager_CPU_getCPUName(JNIEnv *env, jobject thiz) {
-    std::string name = getCPUName();
-    return env->NewStringUTF(name.c_str());
+    std::string cpuName = execCommand("getprop ro.soc.model");
+    if (cpuName.empty())
+    {
+        cpuName = execCommand("getprop ro.board.platform");
+    }
+    return env->NewStringUTF(cpuName.c_str());
 }
 
 extern "C" JNIEXPORT jint JNICALL
