@@ -56,11 +56,11 @@ Java_apw_android_phonemanager_CPU_getCPUArch(JNIEnv *env, jobject thiz) {
     return env->NewStringUTF(arm64.c_str());
 }
 
-std::string getGpuInfo(const std::string *input){
-    std::regex pattern(R"GLES:\s*([^,]+),)");
+std::string getGpuInfo(const std::string &input) {
+    std::regex pattern(R"(GLES:\s*([^,]+),)");
     std::smatch match;
-    if(std::regex_search(input, match, pattern) && match.size()>=3){
-        return match[1].str() + "," + match[2].str();
+    if(std::regex_search(input, match, pattern) && match.size() >= 2) {
+        return match[1].str();
     }
     return "Unknown";
 }
