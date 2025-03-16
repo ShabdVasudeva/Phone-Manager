@@ -69,5 +69,5 @@ extern "C" JNIEXPORT jstring JNICALL
 Java_apw_android_phonemanager_CPU_getGPURenderer(JNIEnv *env, jobject thiz){
     std::string dumpsysOutput = execCommand("dumpsys SurfaceFlinger | grep GLES");
     std::string gpuInfo = getGpuInfo(dumpsysOutput);
-    return env->NewStringUTF(gpuInfo.c_str());
+    return env->NewStringUTF(dumpsysOutput.c_str());
 }
