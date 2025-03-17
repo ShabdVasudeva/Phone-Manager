@@ -14,7 +14,7 @@ std::string getProp(const char* str){
     while(fgets(buffer, sizeof(buffer), pipe) != nullptr){
         result += buffer;
     }
-    pclose(buffer);
+    pclose(pipe);
     if (!result.empty() && result[result.length()-1] == '\n'){
         result.erase(result.length()-1);
     }
