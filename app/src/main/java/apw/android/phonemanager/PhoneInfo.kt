@@ -37,6 +37,9 @@ data class InfoData(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun phoneInfoCompat(){
+    val buildVersion = DeviceInfo.getBuildVersion()
+    val kernel = DeviceInfo.getKernelVersion()
+    val baseband = DeviceInfo.getBasebandVersion()
     val deviceName = DeviceInfo.getDeviceName()
     val cpuModel = CPU.getCPUName()
     val cpuCores = CPU.getCPUCores()
@@ -45,11 +48,14 @@ fun phoneInfoCompat(){
     val gpuRenderer = CPU.getGPURenderer()
     val values = listOf<InfoData>(
         InfoData("Device name", "$deviceName"),
-        InfoData("CPU Manufacturer", "$cpuMan"),
-        InfoData("CPU Model", "$cpuModel"),
-        InfoData("CPU Cores", "$cpuCores"),
+        InfoData("Android version", "$buildVersion"),
+        InfoData("CPU manufacturer", "$cpuMan"),
+        InfoData("CPU model", "$cpuModel"),
+        InfoData("CPU cores", "$cpuCores"),
         InfoData("Architecture", "$cpuArch"),
-        InfoData("Graphics Renderer", "$gpuRenderer")
+        InfoData("Graphics renderer", "$gpuRenderer"),
+        InfoData("Baseband version", "$baseband"),
+        InfoData("Kernel version", "$kernel")
     )
     Card(
         modifier = Modifier.fillMaxSize().padding(16.dp),
