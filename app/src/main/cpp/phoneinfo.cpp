@@ -23,7 +23,25 @@ Java_apw_android_phonemanager_DeviceInfo_getBasebandVersion(JNIEnv *env, jobject
 }
 
 extern "C" JNIEXPORT jstring JNICALL
+Java_apw_android_phonemanager_DeviceInfo_getZone(JNIEnv *env, jobject thiz){
+  std::string zone = getProp("getprop persist.sys.timezone");
+  return env->NewStringUTF(zone.c_str());
+}
+
+extern "C" JNIEXPORT jstring JNICALL
 Java_apw_android_phonemanager_DeviceInfo_getKernelVersion(JNIEnv *env, jobject thiz){
   std::string kernel = getProp("uname -r");
   return env->NewStringUTF(kernel.c_str());
+}
+
+extern "C" JNIEXPORT jstring JNICALL
+Java_apw_android_phonemanager_DeviceInfo_getFingerprint(JNIEnv *env, jobject thiz){
+  std::string fingerprint = getProp("getprop ro.build.fingerprint")
+  return env->NewStringUTF(fingerprint.c_str());
+}
+
+extern "C" JNIEXPORT jstring JNICALL
+Java_apw_android_phonemanager_DeviceInfo_getDisplayDpi(JNIEnv *env, jobject thiz){
+  std::string dpi = getProp("getprop ro.sf.lcd_density");
+  return env->NewStringUTF(dpi.c_str());
 }

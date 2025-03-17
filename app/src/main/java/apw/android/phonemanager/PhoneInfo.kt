@@ -46,6 +46,9 @@ fun phoneInfoCompat(){
     val cpuArch = CPU.getCPUArch()
     val cpuMan = CPU.getCPUMan()
     val gpuRenderer = CPU.getGPURenderer()
+    val fingerprint = DeviceInfo.getFingerprint()
+    val displayDpi = DeviceInfo.getDisplayDpi()
+    val zone = DeviceInfo.getZone()
     val values = listOf<InfoData>(
         InfoData("Device name", "$deviceName"),
         InfoData("Android version", "$buildVersion"),
@@ -55,7 +58,10 @@ fun phoneInfoCompat(){
         InfoData("Architecture", "$cpuArch"),
         InfoData("Graphics renderer", "$gpuRenderer"),
         InfoData("Baseband version", "$baseband"),
-        InfoData("Kernel version", "$kernel")
+        InfoData("Fingerprint", "$fingerprint"),
+        InfoData("Kernel version", "$kernel"),
+        InfoData("Display dpi", "$displayDpi"),
+        InfoData("Time zone", "$zone")
     )
     Card(
         modifier = Modifier.fillMaxSize().padding(16.dp),
