@@ -36,7 +36,7 @@ Java_apw_android_phonemanager_DeviceInfo_getKernelVersion(JNIEnv *env, jobject t
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_apw_android_phonemanager_DeviceInfo_getFingerprint(JNIEnv *env, jobject thiz){
-  std::string fingerprint = getProp("getprop ro.build.fingerprint")
+  std::string fingerprint = getProp("getprop ro.build.fingerprint");
   return env->NewStringUTF(fingerprint.c_str());
 }
 
