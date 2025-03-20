@@ -31,7 +31,7 @@ class StorageActivity : ComponentActivity(){
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ){
-                    batteryMainScreen()
+                    storageMainScreen()
                 }
             }
         }
@@ -40,7 +40,7 @@ class StorageActivity : ComponentActivity(){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun batteryMainScreen(){
+fun storageMainScreen(){
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
