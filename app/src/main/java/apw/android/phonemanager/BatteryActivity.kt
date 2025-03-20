@@ -68,7 +68,7 @@ fun batteryMainScreen(){
             ) {
                 BatteryIndicator(batteryPercentage = 78)
             }  
-            /* LazyColumn(
+            LazyColumn(
                 contentPadding = innerPadding,
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -81,7 +81,7 @@ fun batteryMainScreen(){
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
                     )
                 }
-            } */
+            }
         }
     )
 }
