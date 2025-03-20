@@ -97,7 +97,7 @@ fun mainScreen(){
 fun ManagerScreen(){
     val context = LocalContext.current
     val intent1: Intent = Intent(context, BatteryActivity::class.java)
-    val intent2: Intent = Intent(context, BatteryActivity::class.java)
+    val intent2: Intent = Intent(context, StorageActivity::class.java)
     val values = listOf<CardInfo>(
         CardInfo("Battery", "Battery stats and management", {Icon(painter = painterResource(R.drawable.battery), contentDescription = "Battery")}, intent1),
         CardInfo("Storage", "Storage stats and management", {Icon(painter = painterResource(R.drawable.storage), contentDescription = "Storage")}, intent2)
