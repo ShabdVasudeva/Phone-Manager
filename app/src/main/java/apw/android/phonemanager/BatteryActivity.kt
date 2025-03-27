@@ -23,6 +23,7 @@ import apw.android.phonemanager.ui.theme.MyComposeApplicationTheme
 class BatteryActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
             MyComposeApplicationTheme {
                 Surface(
