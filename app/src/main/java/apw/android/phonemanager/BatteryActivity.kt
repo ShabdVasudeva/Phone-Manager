@@ -59,6 +59,7 @@ fun BatteryMainScreen() {
                     .padding(innerPadding),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // **Sticky Battery Indicator**
                 Box(
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center
@@ -66,6 +67,7 @@ fun BatteryMainScreen() {
                     BatteryIndicator(batteryPercentage = 78)
                 }
 
+                // **Scrollable List**
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -86,6 +88,7 @@ fun BatteryMainScreen() {
     )
 }
 
+// **Beautiful Battery Indicator**
 @Composable
 fun BatteryIndicator(batteryPercentage: Int) {
     val animatedProgress by animateFloatAsState(
