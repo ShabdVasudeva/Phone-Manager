@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import apw.android.phonemanager.ui.theme.MyComposeApplicationTheme
 
 class BatteryActivity : ComponentActivity() {
@@ -41,7 +42,7 @@ fun BatteryMainScreen() {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
                 title = { Text("Battery Manager", maxLines = 2) },
@@ -53,42 +54,33 @@ fun BatteryMainScreen() {
             )
         },
         content = { innerPadding ->
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
-                horizontalAlignment = Alignment.CenterHorizontally
+                verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                // **Sticky Battery Indicator**
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
+                // **Battery Indicator ab scroll hoga**
+                item {
                     BatteryIndicator(batteryPercentage = 78)
                 }
 
-                // **Scrollable List**
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    val list = (0..100).map { it.toString() }
-                    items(list) {
-                        Text(
-                            text = it,
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                        )
-                    }
+                val list = (0..100).map { it.toString() }
+                items(list) {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    )
                 }
             }
         }
     )
 }
 
-// **Beautiful Battery Indicator**
+// **🔥 Beautiful Battery Indicator**
 @Composable
 fun BatteryIndicator(batteryPercentage: Int) {
     val animatedProgress by animateFloatAsState(
