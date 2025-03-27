@@ -1,24 +1,25 @@
 package apw.android.phonemanager
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
+import androidx.activity.*
 import androidx.activity.compose.setContent
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.shape.*
+import androidx.compose.foundation.*
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.*
+import androidx.compose.ui.res.*
+import androidx.compose.ui.text.style.*
+import androidx.compose.ui.unit.*
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.*
+import androidx.compose.ui.tooling.preview.Preview
 import apw.android.phonemanager.ui.theme.MyComposeApplicationTheme
+import apw.android.phonemanager.R
 
 class BatteryActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
