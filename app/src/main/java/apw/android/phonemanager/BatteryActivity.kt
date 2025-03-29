@@ -14,6 +14,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.res.*
+import androidx.compose.ui.text.*
+import androidx.compose.ui.text.font.*
 import androidx.compose.ui.text.style.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.graphics.*
@@ -105,7 +107,7 @@ fun BatteryIndicator(batteryPercentage: Int) {
             modifier = Modifier.fillMaxWidth()
         ){
             Text(
-                text = "$batteryPercentange",
+                text = "$batteryPercentage",
                 style = TextStyle(
                     fontSize = 48.sp,
                     fontWeight = FontWeight.Bold
