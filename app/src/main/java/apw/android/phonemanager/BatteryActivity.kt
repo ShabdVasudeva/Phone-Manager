@@ -72,13 +72,7 @@ fun BatteryMainScreen() {
 
                 val list = (0..100).map { it.toString() }
                 items(list) {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                    )
+                    // add cards
                 }
             }
         }
@@ -119,7 +113,8 @@ fun BatteryIndicator(batteryPercentage: Int) {
                 style = TextStyle(
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold
-                )
+                ),
+                modifier = Modifier.offset(y = 8.dp)
             )
         }
         Box(
