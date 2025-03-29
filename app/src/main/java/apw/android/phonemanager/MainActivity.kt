@@ -54,12 +54,12 @@ data class CardInfo(
 @Composable
 fun mainScreen(){
     var selectedScreen by remember {mutableStateOf("Manager")}
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     var topbarTitle = if(selectedScreen == "Info") "Info" else "Manager"
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            LargeTopAppBar(
+            CenterAlignedTopAppBar(
                 title = {
                     Text(
                         "Phone $topbarTitle",
@@ -68,7 +68,7 @@ fun mainScreen(){
                     )
                 },
                 colors = TopAppBarDefaults.largeTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
                     scrolledContainerColor = MaterialTheme.colorScheme.surfaceVariant
                 ),
                 scrollBehavior = scrollBehavior
