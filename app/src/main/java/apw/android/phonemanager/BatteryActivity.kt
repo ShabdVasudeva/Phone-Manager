@@ -64,7 +64,6 @@ fun BatteryMainScreen() {
                     .padding(innerPadding),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                // **Battery Indicator ab scroll hoga**
                 item {
                     BatteryIndicator(batteryPercentage = 78)
                 }
@@ -84,7 +83,6 @@ fun BatteryMainScreen() {
     )
 }
 
-// **🔥 Beautiful Battery Indicator**
 @Composable
 fun BatteryIndicator(batteryPercentage: Int) {
     val animatedProgress by animateFloatAsState(
@@ -103,13 +101,25 @@ fun BatteryIndicator(batteryPercentage: Int) {
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        Text(
-            text = "Battery Level: $batteryPercentage%",
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
-
+        Row(
+            modifier = Modifier.fillMaxWidth()
+        ){
+            Text(
+                text = "$batteryPercentange",
+                style = TextStyle(
+                    fontSize = 48.sp,
+                    fontWeight = FontWeight.Bold
+                ),
+                textAlign = TextAlign.Start
+            )
+            Text(
+                text = "%",
+                style = TextStyle(
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            )
+        }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
