@@ -32,14 +32,14 @@ jobs:
 
       - name: Set up Gradle Properties
         run: |
-          echo "storeFile=keystore.jks" >> $GITHUB_ENV
+          echo "storeFile=$GITHUB_WORKSPACE/app/keystore.jks" >> $GITHUB_ENV
           echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> $GITHUB_ENV
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> $GITHUB_ENV
 
-      - name: Give permissions to gradle
-      - run: chmod +x gradlew
-      
+      - name: Give Execute Permission to Gradle
+        run: chmod +x gradlew
+
       - name: Build Signed APK
         run: ./gradlew assembleRelease --no-daemon
         env:
