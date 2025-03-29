@@ -15,12 +15,12 @@ jobs:
 
       - name: Ensure Gradle Wrapper Exists
         run: |
-          if [ ! -f "gradlew" ]; then
-            echo "Gradle wrapper not found, downloading..."
-            ./gradlew wrapper
+          if [ ! -f "gradle/wrapper/gradle-wrapper.properties" ]; then
+            echo "gradle-wrapper.properties missing, regenerating..."
+            gradle wrapper
           fi
 
-      - name: Give Execute Permission to Gradle
+      - name: Grant Execute Permission to Gradle
         run: chmod +x gradlew
 
       - name: Set up JDK 17
