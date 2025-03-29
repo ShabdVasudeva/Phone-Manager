@@ -37,6 +37,9 @@ jobs:
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> $GITHUB_ENV
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> $GITHUB_ENV
 
+      - name: Give permissions to gradle
+      - run: chmod +x gradlew
+      
       - name: Build Signed APK
         run: ./gradlew assembleRelease --no-daemon
         env:
