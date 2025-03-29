@@ -1,4 +1,4 @@
-name: Build and Release APK
+name: Build and Release Signed APK
 
 on:
   push:
@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up JDK 17
         uses: actions/setup-java@v2
@@ -25,39 +25,33 @@ jobs:
       - name: Install NDK and CMake
         run: |
           sdkmanager "ndk;26.2.11394342" "cmake;3.22.1"
-          echo "NDK Version Installed:"
-          ${ANDROID_SDK_ROOT}/ndk/26.2.11394342/ndk-build --version
 
-      - name: Set up Gradle wrapper (if missing or outdated)
+      - name: Decode Keystore
         run: |
-          if [ ! -f gradle/wrapper/gradle-wrapper.properties ]; then
-            echo "Setting up Gradle wrapper..."
-            gradle wrapper --gradle-version 8.10.2
-          else
-            current_version=$(./gradlew --version | grep -oP 'Gradle \K[0-9.]+')
-            if [ "$(printf '%s\n' "8.10.2" "$current_version" | sort -V | head -n1)" != "8.10.2" ]; then
-              echo "Updating Gradle wrapper to version 8.10.2"
-              sed -i 's|gradle-[0-9]*\.[0-9]*\.[0-9]*-all\.zip|gradle-8.10.2-all.zip|' gradle/wrapper/gradle-wrapper.properties
-            fi
-          fi
+          echo "${{ secrets.KEYSTORE_FILE_BASE64 }}" | base64 --decode > app/keystore.jks
 
-      - name: Set up Gradle properties
+      - name: Set up Gradle Properties
         run: |
-          echo "KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
-          echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> $GITHUB_ENV
-          echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> $GITHUB_ENV
+          echo "storeFile=keystore.jks" >> $GITHUB_ENV
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> $GITHUB_ENV
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> $GITHUB_ENV
 
-      - name: Build APK with C++ Support
+      - name: Build Signed APK
         run: ./gradlew assembleRelease --no-daemon
         env:
           ANDROID_NDK_HOME: $ANDROID_SDK_ROOT/ndk/26.2.11394342
           CMAKE_HOME: $ANDROID_SDK_ROOT/cmake/3.22.1
 
+      - name: Verify APK Signature
+        run: |
+          jarsigner -verify -verbose -certs app/build/outputs/apk/release/app-release.apk || exit 1
+
       - name: Upload APK as Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Built APK
-          path: app/build/outputs/apk/release/*.apk
+          name: Signed APK
+          path: app/build/outputs/apk/release/app-release.apk
 
   release:
     needs: build
@@ -67,7 +61,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Create Tag
         run: |
@@ -79,7 +73,7 @@ jobs:
       - name: Download APK Artifact
         uses: actions/download-artifact@v4
         with:
-          name: Built APK
+          name: Signed APK
           path: release-apk/
 
       - name: List APK Files
@@ -90,7 +84,7 @@ jobs:
         with:
           tag_name: ${{ env.TAG_NAME }}
           name: "Release ${{ env.TAG_NAME }}"
-          body: 'This is an automated release of the APK.'
-          files: release-apk/*.apk
+          body: 'This is an automated release of the signed APK.'
+          files: release-apk/app-release.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
