@@ -39,6 +39,9 @@ jobs:
           echo "keyAlias=debug" >> $GITHUB_ENV
           echo "keyPassword=android" >> $GITHUB_ENV
 
+      - name: "Give permissions to gradlew"
+        run: chmod +x gradlew
+        
       - name: "Build Signed APK"
         run: ./gradlew assembleRelease --no-daemon
 
