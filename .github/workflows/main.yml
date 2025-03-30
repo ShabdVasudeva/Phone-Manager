@@ -53,6 +53,15 @@ jobs:
           ANDROID_NDK_HOME: $ANDROID_SDK_ROOT/ndk/26.2.11394342
           CMAKE_HOME: $ANDROID_SDK_ROOT/cmake/3.22.1
 
+      - name: Debug APK Path
+        run: |
+          echo "Checking APK location..."
+          find app/build/outputs/apk -type f
+          if [ ! -f "app/build/outputs/apk/release/app-release.apk" ]; then
+            echo "Error: APK not found!"
+            exit 1
+          fi
+
       - name: Verify APK Signature
         run: |
           jarsigner -verify -verbose -certs app/build/outputs/apk/release/app-release.apk || exit 1
