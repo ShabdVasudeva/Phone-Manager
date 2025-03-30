@@ -13,16 +13,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Ensure Gradle Wrapper Exists
-        run: |
-          if [ ! -f "gradle/wrapper/gradle-wrapper.properties" ]; then
-            echo "gradle-wrapper.properties missing, regenerating..."
-            gradle wrapper
-          fi
-
-      - name: Grant Execute Permission to Gradle
-        run: chmod +x gradlew
-
       - name: Set up JDK 17
         uses: actions/setup-java@v2
         with:
@@ -36,9 +26,22 @@ jobs:
         run: |
           sdkmanager "ndk;26.2.11394342" "cmake;3.22.1"
 
-      - name: Decode Keystore
+      - name: Ensure Gradle Wrapper Exists
         run: |
-          echo "${{ secrets.KEYSTORE_FILE_BASE64 }}" | base64 --decode > app/keystore.jks
+          if [ ! -f "./gradlew" ]; then
+            echo "Error: gradlew not found!"
+            exit 1
+          fi
+          if [ ! -f "gradle/wrapper/gradle-wrapper.properties" ]; then
+            echo "Error: gradle-wrapper.properties missing!"
+            exit 1
+          fi
+
+      - name: Give Execute Permission to Gradle
+        run: chmod +x gradlew
+
+      - name: Decode Keystore
+        run: echo "${{ secrets.KEYSTORE_FILE_BASE64 }}" | base64 --decode > app/keystore.jks
 
       - name: Set up Gradle Properties
         run: |
@@ -47,24 +50,32 @@ jobs:
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> $GITHUB_ENV
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> $GITHUB_ENV
 
-      - name: Build Signed APK
+      - name: Build Unsigned APK
         run: ./gradlew assembleRelease --no-daemon
         env:
           ANDROID_NDK_HOME: $ANDROID_SDK_ROOT/ndk/26.2.11394342
           CMAKE_HOME: $ANDROID_SDK_ROOT/cmake/3.22.1
 
-      - name: Debug APK Path
+      - name: Verify APK Path
         run: |
           echo "Checking APK location..."
           find app/build/outputs/apk -type f
-          if [ ! -f "app/build/outputs/apk/release/app-release.apk" ]; then
+          if [ ! -f "app/build/outputs/apk/release/app-release-unsigned.apk" ]; then
             echo "Error: APK not found!"
             exit 1
           fi
 
-      - name: Verify APK Signature
+      - name: Sign APK
         run: |
-          jarsigner -verify -verbose -certs app/build/outputs/apk/release/app-release.apk || exit 1
+          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
+            -keystore app/keystore.jks -storepass ${{ secrets.KEYSTORE_PASSWORD }} \
+            -keypass ${{ secrets.KEY_PASSWORD }} -signedjar \
+            app/build/outputs/apk/release/app-release.apk \
+            app/build/outputs/apk/release/app-release-unsigned.apk \
+            ${{ secrets.KEY_ALIAS }}
+
+      - name: Verify APK Signature
+        run: jarsigner -verify -verbose -certs app/build/outputs/apk/release/app-release.apk
 
       - name: Upload APK as Artifact
         uses: actions/upload-artifact@v4
