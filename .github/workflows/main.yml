@@ -30,8 +30,8 @@ jobs:
       # 🔥 Regenerate Gradle Wrapper (Fix Gradle issue)
       - name: "Regenerate Gradle Wrapper"
         run: |
-          ./gradlew wrapper
           chmod +x gradlew
+          ./gradlew wrapper
 
       # 🔥 Automatically create a keystore (if missing)
       - name: "Generate Keystore"
