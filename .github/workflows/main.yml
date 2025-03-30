@@ -27,11 +27,20 @@ jobs:
       - name: "Setup Gradle"
         uses: gradle/gradle-build-action@v2
 
-      # 🔥 Automatically create a keystore (Fixed)
+      # 🔥 Ensure Gradle Wrapper Exists
+      - name: "Check Gradle Wrapper"
+        run: |
+          if [ ! -f "./gradlew" ]; then
+            echo "Gradle Wrapper missing! Generating..."
+            gradle wrapper
+          fi
+
+      # 🔥 Generate a Keystore for Signing (if not using a production keystore)
       - name: "Generate Keystore"
         run: |
           keytool -genkey -v -keystore app/debug.keystore -alias debug -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Debug, OU=Dev, O=MyApp, L=City, ST=State, C=US"
 
+      # 🔥 Set up Signing Properties
       - name: "Create Signing Config"
         run: |
           echo "storeFile=debug.keystore" >> $GITHUB_ENV
@@ -39,22 +48,26 @@ jobs:
           echo "keyAlias=debug" >> $GITHUB_ENV
           echo "keyPassword=android" >> $GITHUB_ENV
 
-      - name: "Give permissions to gradlew"
+      - name: "Give Execute Permission to Gradle"
         run: chmod +x gradlew
-        
+
+      # 🔥 Build Signed APK
       - name: "Build Signed APK"
         run: ./gradlew assembleRelease --no-daemon
 
-      - name: "Find Generated APKs"
+      # 🔥 Find the generated APK
+      - name: "Find Generated APK"
         run: |
           echo "APK_PATH=$(find app/build/outputs/apk/release -name '*.apk' -print | head -n 1)" >> $GITHUB_ENV
 
+      # 🔥 Upload the APK as an artifact
       - name: "Upload APK as Artifact"
         uses: actions/upload-artifact@v4
         with:
           name: "Signed APK"
           path: app/build/outputs/apk/release/*.apk
 
+      # 🔥 Create a GitHub Release
       - name: "Create GitHub Release"
         uses: softprops/action-gh-release@v1
         with:
