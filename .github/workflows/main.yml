@@ -27,10 +27,10 @@ jobs:
       - name: "Setup Gradle"
         uses: gradle/gradle-build-action@v2
 
-      # 🔥 Automatically create a keystore
+      # 🔥 Automatically create a keystore (Fixed)
       - name: "Generate Keystore"
         run: |
-          keytool -genkey -v -keystore app/debug.keystore -alias debug -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android
+          keytool -genkey -v -keystore app/debug.keystore -alias debug -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Debug, OU=Dev, O=MyApp, L=City, ST=State, C=US"
 
       - name: "Create Signing Config"
         run: |
