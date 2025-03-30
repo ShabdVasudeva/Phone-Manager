@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build:
-    name: Build APK
+    name: Build Signed APK
     runs-on: ubuntu-latest
 
     steps:
@@ -48,21 +48,37 @@ jobs:
 
       - name: "Set up Keystore for Signing"
         run: |
-          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
-          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> $GITHUB_ENV
-          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> $GITHUB_ENV
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > keystore.jks
+          echo "KEYSTORE_PATH=$GITHUB_WORKSPACE/keystore.jks" >> $GITHUB_ENV
+          echo "KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
+          echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> $GITHUB_ENV
+          echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> $GITHUB_ENV
 
-      - name: "Build Signed APK"
+      - name: "Build Unsigned APK"
         run: ./gradlew assembleRelease --no-daemon
         env:
           ANDROID_NDK_HOME: $ANDROID_SDK_ROOT/ndk/26.2.11394342
           CMAKE_HOME: $ANDROID_SDK_ROOT/cmake/3.22.1
 
-      - name: "Upload APK as Artifact"
+      - name: "Sign APK"
+        run: |
+          ZIPALIGN=$ANDROID_SDK_ROOT/build-tools/$(ls $ANDROID_SDK_ROOT/build-tools | sort -V | tail -n1)/zipalign
+          APKSIGNER=$ANDROID_SDK_ROOT/build-tools/$(ls $ANDROID_SDK_ROOT/build-tools | sort -V | tail -n1)/apksigner
+          UNSIGNED_APK=app/build/outputs/apk/release/app-release-unsigned.apk
+          ALIGNED_APK=app/build/outputs/apk/release/app-release-aligned.apk
+          SIGNED_APK=app/build/outputs/apk/release/app-release.apk
+
+          # Zipalign APK
+          $ZIPALIGN -v -p 4 "$UNSIGNED_APK" "$ALIGNED_APK"
+
+          # Sign APK
+          $APKSIGNER sign --ks "$KEYSTORE_PATH" --ks-pass "pass:$KEYSTORE_PASSWORD" --key-pass "pass:$KEY_PASSWORD" --ks-key-alias "$KEY_ALIAS" --out "$SIGNED_APK" "$ALIGNED_APK"
+
+      - name: "Upload Signed APK as Artifact"
         uses: actions/upload-artifact@v4
         with:
-          name: "Built APK"
-          path: app/build/outputs/apk/release/*.apk
+          name: "Signed APK"
+          path: app/build/outputs/apk/release/app-release.apk
 
   release:
     needs: build
@@ -74,10 +90,10 @@ jobs:
       - name: "Generate Release Tag"
         run: echo "TAG_NAME=v1.0.${{ github.run_number }}" >> $GITHUB_ENV
 
-      - name: "Download APK Artifact"
+      - name: "Download Signed APK Artifact"
         uses: actions/download-artifact@v4
         with:
-          name: "Built APK"
+          name: "Signed APK"
           path: release-apk/
 
       - name: "List APK Files"
@@ -88,7 +104,7 @@ jobs:
         with:
           tag_name: ${{ env.TAG_NAME }}
           name: "Release ${{ env.TAG_NAME }}"
-          body: "This is an automated release of the APK."
-          files: release-apk/*.apk
+          body: "This is an automated release of the signed APK."
+          files: release-apk/app-release.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
