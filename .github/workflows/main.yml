@@ -31,12 +31,19 @@ jobs:
         run: |
           sdkmanager "ndk;26.2.11394342" "cmake;3.22.1"
 
-      - name: "Regenerate Gradle Wrapper if Missing"
+      - name: "Check and Fix Gradle Wrapper"
         run: |
+          mkdir -p gradle/wrapper
           if [ ! -f gradlew ]; then
             echo "Gradle wrapper missing. Regenerating..."
-            ./gradlew wrapper --gradle-version 8.10.2
+            gradle wrapper --gradle-version 8.10.2
           fi
+          
+          if [ ! -f gradle/wrapper/gradle-wrapper.properties ]; then
+            echo "Creating missing gradle-wrapper.properties..."
+            echo "distributionUrl=https\://services.gradle.org/distributions/gradle-8.10.2-all.zip" > gradle/wrapper/gradle-wrapper.properties
+          fi
+          
           chmod +x gradlew
 
       - name: "Set up Keystore for Signing"
