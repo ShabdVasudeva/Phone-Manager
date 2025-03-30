@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build:
-    name: Build Signed APK
+    name: Build APK
     runs-on: ubuntu-latest
 
     steps:
@@ -19,53 +19,69 @@ jobs:
         uses: actions/checkout@v3
 
       - name: "Set up JDK 17"
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v2
         with:
-          java-version: "17"
           distribution: "temurin"
+          java-version: "17"
 
-      - name: "Setup Gradle"
-        uses: gradle/gradle-build-action@v2
+      - name: "Set up Android SDK"
+        uses: android-actions/setup-android@v3
 
-      # 🔥 Regenerate Gradle Wrapper (Fix Gradle issue)
-      - name: "Regenerate Gradle Wrapper"
+      - name: "Install NDK and CMake"
         run: |
-          chmod +x gradlew
-          ./gradlew wrapper
+          sdkmanager "ndk;26.2.11394342" "cmake;3.22.1"
 
-      # 🔥 Automatically create a keystore (if missing)
-      - name: "Generate Keystore"
+      - name: "Regenerate Gradle Wrapper if Missing"
         run: |
-          if [ ! -f "app/debug.keystore" ]; then
-            keytool -genkey -v -keystore app/debug.keystore -alias debug -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Debug, OU=Dev, O=MyApp, L=City, ST=State, C=US"
+          if [ ! -f gradlew ]; then
+            echo "Gradle wrapper missing. Regenerating..."
+            ./gradlew wrapper --gradle-version 8.10.2
           fi
+          chmod +x gradlew
 
-      - name: "Create Signing Config"
+      - name: "Set up Keystore for Signing"
         run: |
-          echo "storeFile=debug.keystore" >> $GITHUB_ENV
-          echo "storePassword=android" >> $GITHUB_ENV
-          echo "keyAlias=debug" >> $GITHUB_ENV
-          echo "keyPassword=android" >> $GITHUB_ENV
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> $GITHUB_ENV
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> $GITHUB_ENV
 
       - name: "Build Signed APK"
         run: ./gradlew assembleRelease --no-daemon
-
-      - name: "Find Generated APKs"
-        run: |
-          echo "APK_PATH=$(find app/build/outputs/apk/release -name '*.apk' -print | head -n 1)" >> $GITHUB_ENV
+        env:
+          ANDROID_NDK_HOME: $ANDROID_SDK_ROOT/ndk/26.2.11394342
+          CMAKE_HOME: $ANDROID_SDK_ROOT/cmake/3.22.1
 
       - name: "Upload APK as Artifact"
         uses: actions/upload-artifact@v4
         with:
-          name: "Signed APK"
+          name: "Built APK"
           path: app/build/outputs/apk/release/*.apk
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout Repository"
+        uses: actions/checkout@v3
+
+      - name: "Generate Release Tag"
+        run: echo "TAG_NAME=v1.0.${{ github.run_number }}" >> $GITHUB_ENV
+
+      - name: "Download APK Artifact"
+        uses: actions/download-artifact@v4
+        with:
+          name: "Built APK"
+          path: release-apk/
+
+      - name: "List APK Files"
+        run: ls -alh release-apk/
 
       - name: "Create GitHub Release"
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v1.0.${{ github.run_number }}
-          name: Release v1.0.${{ github.run_number }}
-          body: "This is an automated release of the Android app."
-          files: app/build/outputs/apk/release/*.apk
+          tag_name: ${{ env.TAG_NAME }}
+          name: "Release ${{ env.TAG_NAME }}"
+          body: "This is an automated release of the APK."
+          files: release-apk/*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
