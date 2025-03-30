@@ -1,9 +1,10 @@
-name: Android Build and Release
+name: "Android Build and Release"
 
 on:
   push:
     branches:
       - main
+  pull_request:
 
 permissions:
   contents: write
@@ -14,77 +15,80 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: "Checkout Repository"
         uses: actions/checkout@v3
 
-      - name: Set up JDK 17
+      - name: "Set up JDK 17"
         uses: actions/setup-java@v2
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: "temurin"
+          java-version: "17"
 
-      - name: Set up Android SDK
+      - name: "Set up Android SDK"
         uses: android-actions/setup-android@v3
 
-      - name: Install NDK and CMake
+      - name: "Install NDK and CMake"
         run: |
           sdkmanager "ndk;26.2.11394342" "cmake;3.22.1"
 
-      - name: Decode Keystore
-        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > release-key.jks
-
-      - name: Set up Gradle properties
+      - name: "Check and Fix Gradle Wrapper"
         run: |
-          echo "KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
-          echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> $GITHUB_ENV
-          echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> $GITHUB_ENV
-
-      - name: Build Unsigned APKs
-        run: |
+          mkdir -p gradle/wrapper
+          if [ ! -f gradlew ]; then
+            echo "Gradle wrapper missing. Regenerating..."
+            gradle wrapper --gradle-version 8.10.2
+          fi
+          
+          if [ ! -f gradle/wrapper/gradle-wrapper.properties ]; then
+            echo "Creating missing gradle-wrapper.properties..."
+            echo "distributionUrl=https\://services.gradle.org/distributions/gradle-8.10.2-all.zip" > gradle/wrapper/gradle-wrapper.properties
+          fi
+          
           chmod +x gradlew
-          ./gradlew assembleRelease --no-daemon
+
+      - name: "Set up Keystore for Signing"
+        run: |
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> $GITHUB_ENV
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> $GITHUB_ENV
+
+      - name: "Build Signed APK"
+        run: ./gradlew assembleRelease --no-daemon
         env:
           ANDROID_NDK_HOME: $ANDROID_SDK_ROOT/ndk/26.2.11394342
           CMAKE_HOME: $ANDROID_SDK_ROOT/cmake/3.22.1
 
-      - name: Sign All APKs
-        run: |
-          for apk in app/build/outputs/apk/release/*.apk; do
-            apksigner sign --ks release-key.jks --ks-pass pass:${{ secrets.KEYSTORE_PASSWORD }} \
-              --key-pass pass:${{ secrets.KEY_PASSWORD }} --ks-key-alias ${{ secrets.KEY_ALIAS }} \
-              --out "${apk/.apk/-signed.apk}" "$apk"
-          done
-
-      - name: Verify APK Signatures
-        run: apksigner verify -v app/build/outputs/apk/release/*-signed.apk
-
-      - name: Upload Signed APKs
+      - name: "Upload APK as Artifact"
         uses: actions/upload-artifact@v4
         with:
-          name: Signed APKs
-          path: app/build/outputs/apk/release/*-signed.apk
+          name: "Built APK"
+          path: app/build/outputs/apk/release/*.apk
 
   release:
-    name: Create Release
     needs: build
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Repository
+      - name: "Checkout Repository"
         uses: actions/checkout@v3
 
-      - name: Download Signed APKs
+      - name: "Generate Release Tag"
+        run: echo "TAG_NAME=v1.0.${{ github.run_number }}" >> $GITHUB_ENV
+
+      - name: "Download APK Artifact"
         uses: actions/download-artifact@v4
         with:
-          name: Signed APKs
+          name: "Built APK"
           path: release-apk/
 
-      - name: Create GitHub Release
+      - name: "List APK Files"
+        run: ls -alh release-apk/
+
+      - name: "Create GitHub Release"
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v1.0.${{ github.run_number }}
-          name: Release v1.0.${{ github.run_number }}
-          body: "This is an automated release of the signed APKs."
+          tag_name: ${{ env.TAG_NAME }}
+          name: "Release ${{ env.TAG_NAME }}"
+          body: "This is an automated release of the APK."
           files: release-apk/*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
