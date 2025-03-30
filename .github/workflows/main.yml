@@ -1,120 +1,63 @@
-name: Build and Release Signed APK
+name: "Android Build and Release"
 
 on:
   push:
     branches:
       - main
+  pull_request:
+
+permissions:
+  contents: write
 
 jobs:
   build:
+    name: Build Signed APK
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: "Checkout Repository"
         uses: actions/checkout@v3
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v2
+      - name: "Set up JDK 17"
+        uses: actions/setup-java@v1
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          java-version: "17"
+          distribution: "temurin"
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      - name: "Setup Gradle"
+        uses: gradle/gradle-build-action@v2
 
-      - name: Install NDK and CMake
+      # 🔥 Automatically create a keystore
+      - name: "Generate Keystore"
         run: |
-          sdkmanager "ndk;26.2.11394342" "cmake;3.22.1"
+          keytool -genkey -v -keystore app/debug.keystore -alias debug -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android
 
-      - name: Ensure Gradle Wrapper Exists
+      - name: "Create Signing Config"
         run: |
-          if [ ! -f "./gradlew" ]; then
-            echo "Error: gradlew not found!"
-            exit 1
-          fi
-          if [ ! -f "gradle/wrapper/gradle-wrapper.properties" ]; then
-            echo "Error: gradle-wrapper.properties missing!"
-            exit 1
-          fi
+          echo "storeFile=debug.keystore" >> $GITHUB_ENV
+          echo "storePassword=android" >> $GITHUB_ENV
+          echo "keyAlias=debug" >> $GITHUB_ENV
+          echo "keyPassword=android" >> $GITHUB_ENV
 
-      - name: Give Execute Permission to Gradle
-        run: chmod +x gradlew
-
-      - name: Decode Keystore
-        run: echo "${{ secrets.KEYSTORE_FILE_BASE64 }}" | base64 --decode > app/keystore.jks
-
-      - name: Set up Gradle Properties
-        run: |
-          echo "storeFile=keystore.jks" >> $GITHUB_ENV
-          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
-          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> $GITHUB_ENV
-          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> $GITHUB_ENV
-
-      - name: Build Unsigned APK
+      - name: "Build Signed APK"
         run: ./gradlew assembleRelease --no-daemon
-        env:
-          ANDROID_NDK_HOME: $ANDROID_SDK_ROOT/ndk/26.2.11394342
-          CMAKE_HOME: $ANDROID_SDK_ROOT/cmake/3.22.1
 
-      - name: Verify APK Path
+      - name: "Find Generated APKs"
         run: |
-          echo "Checking APK location..."
-          find app/build/outputs/apk -type f
-          if [ ! -f "app/build/outputs/apk/release/app-release-unsigned.apk" ]; then
-            echo "Error: APK not found!"
-            exit 1
-          fi
+          echo "APK_PATH=$(find app/build/outputs/apk/release -name '*.apk' -print | head -n 1)" >> $GITHUB_ENV
 
-      - name: Sign APK
-        run: |
-          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-            -keystore app/keystore.jks -storepass ${{ secrets.KEYSTORE_PASSWORD }} \
-            -keypass ${{ secrets.KEY_PASSWORD }} -signedjar \
-            app/build/outputs/apk/release/app-release.apk \
-            app/build/outputs/apk/release/app-release-unsigned.apk \
-            ${{ secrets.KEY_ALIAS }}
-
-      - name: Verify APK Signature
-        run: jarsigner -verify -verbose -certs app/build/outputs/apk/release/app-release.apk
-
-      - name: Upload APK as Artifact
+      - name: "Upload APK as Artifact"
         uses: actions/upload-artifact@v4
         with:
-          name: Signed APK
-          path: app/build/outputs/apk/release/app-release.apk
+          name: "Signed APK"
+          path: app/build/outputs/apk/release/*.apk
 
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Create Tag
-        run: |
-          TAG_NAME="v$(date +'%Y%m%d%H%M%S')"
-          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
-          git tag $TAG_NAME
-          git push origin $TAG_NAME
-
-      - name: Download APK Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: Signed APK
-          path: release-apk/
-
-      - name: List APK Files
-        run: ls -alh release-apk/
-
-      - name: Create GitHub Release
+      - name: "Create GitHub Release"
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ env.TAG_NAME }}
-          name: "Release ${{ env.TAG_NAME }}"
-          body: 'This is an automated release of the signed APK.'
-          files: release-apk/app-release.apk
+          tag_name: v1.0.${{ github.run_number }}
+          name: Release v1.0.${{ github.run_number }}
+          body: "This is an automated release of the Android app."
+          files: app/build/outputs/apk/release/*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
